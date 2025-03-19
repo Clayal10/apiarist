@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"github.com/Clayal10/mathGen/internal/operations"
 )
 
 // Input will be which math function they want to use and the value to input
@@ -13,6 +14,12 @@ type UserInput struct {
 	InputVal float64
 }
 
+type UserOutput struct {
+	Function string
+	OutputVal float64
+}
+
+// Creates home page template.
 func mainPageHandler(write http.ResponseWriter, request *http.Request) {
 	//Reads content of html file and returns a template
 	template, err := template.ParseFiles("./web/home.html")
@@ -28,26 +35,28 @@ func mainPageHandler(write http.ResponseWriter, request *http.Request) {
 	}
 }
 
+// Takes user submission and prepares it for output on a new page
 func submitHandler(write http.ResponseWriter, request *http.Request) {
 	if request.Method == http.MethodPost {
 		// Parse the submission form if it is a Post
-		err := request.ParseForm()
-		if err != nil {
+		if err := request.ParseForm(); err != nil {
 			fmt.Println("Could not parse form submission")
 			return
 		}
 
 		// Grab the input text box ID
+		inputFuncBuffer := request.FormValue("functionVal")
 		inputValBuffer := request.FormValue("inputVal")
-		inputVal, err := strconv.ParseFloat(inputValBuffer, 64)
+		newVal, err := strconv.ParseFloat(inputValBuffer, 64)
 		if err != nil {
 			fmt.Println("Could not convert to float")
 			return
 		}
 
-		data := UserInput{
-			Function: "Default",
-			InputVal: inputVal,
+		// Create an output struct after parsing the user input
+		data := UserOutput{
+			Function: inputFuncBuffer,
+			OutputVal: operations.SineGen(inputVal),
 		}
 
 		// The template for /submit is also the home template for now
@@ -58,8 +67,7 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 		}
 
 		// Execute the template
-		err = template.Execute(write, data)
-		if err != nil {
+		if err = template.Execute(write, data); err != nil {
 			fmt.Println("Could not execute template")
 			return
 		}
