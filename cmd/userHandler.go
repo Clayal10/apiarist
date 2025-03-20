@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	network "github.com/Clayal10/mathGen/pkg"
 	"html/template"
 	"net/http"
 	"strconv"
-	"github.com/Clayal10/mathGen/internal/operations"
 )
 
 // Input will be which math function they want to use and the value to input
@@ -15,7 +15,7 @@ type UserInput struct {
 }
 
 type UserOutput struct {
-	Function string
+	Function  string
 	OutputVal float64
 }
 
@@ -55,8 +55,8 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 
 		// Create an output struct after parsing the user input
 		data := UserOutput{
-			Function: inputFuncBuffer,
-			OutputVal: operations.SineGen(inputVal),
+			Function:  inputFuncBuffer,
+			OutputVal: network.SineGen(newVal),
 		}
 
 		// The template for /submit is also the home template for now
