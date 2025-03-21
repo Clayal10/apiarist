@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	network "github.com/Clayal10/mathGen/pkg"
+	"github.com/Clayal10/mathGen/pkg/network"
 	"html/template"
 	"net/http"
 	"strconv"
