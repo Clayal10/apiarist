@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+        <title>MathGen</title>
+    </head>
+    <body>
+        <header>
+            <h1>MathGen</h1>
+        </header>
+        <main>
+            <form action="/submit/" method="POST" id="number_submit">
+                <div>
+                    <label for="learning">Learning Method:</label>
+                    <select name="learning" id="learning">
+                        <option value="genetic">Genetic Algorithm</option>
+                        <option value="pswarm">Particle Swarm Optimization</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="functionVal">Function:</label>
+                    <input type="text" id="functionVal" name="functionVal">
+                </div>
+                <div>
+                    <label for="inputVal">Value:</label>
+                    <input type="text" id="inputVal" name="inputVal">
+                </div>
+                <button type="submit" value="Submit">Submit</button>
+            </form>
+        </main>
+    </body>
+</html>

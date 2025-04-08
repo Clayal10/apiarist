@@ -1,0 +1,58 @@
+/*
+    Color Pallette:
+        - #08306B
+        - #08519C
+
+        - #9ECAE1
+        - #F7FbFF
+*/
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    background-color: #08306B;
+    color: #F7FBFF;
+    width: 100%;
+    
+}
+
+h1{
+    text-align: center;
+    font-size: 4em;
+    padding: .7em;
+}
+
+body{
+    background-color: #F7FBFF;
+    height: 100vh;
+}
+
+main{
+    color: #08519C;
+}
+
+#number_submit {
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#number_submit button {
+    width: 25%;
+    background-color: #08306B;
+    color: #F7FBFF;
+    padding: 1em;
+    font-size: 2em;
+    border-radius: 15px;
+}
+#number_submit div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 30%;
+    margin-bottom: 2.5em;
+    font-size: 1.5em;
+}

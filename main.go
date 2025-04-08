@@ -6,8 +6,11 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/home/", mainPageHandler)
+	http.HandleFunc("/", mainPageHandler)
 	http.HandleFunc("/submit/", submitHandler)
+
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
