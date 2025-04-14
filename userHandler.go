@@ -7,20 +7,8 @@ import (
 	"strconv"
 
 	"github.com/Clayal10/mathGen/pkg/network"
+	"github.com/Clayal10/mathGen/pkg/parser"
 )
-
-// Input will be which math function they want to use and the value to input
-type UserInput struct {
-	Function string
-	InputVal float64
-	Learning string
-}
-
-type UserOutput struct { // This struct will change with increased functionality. What we want to give back
-	Function  string
-	OutputVal float64
-	Learning  string
-}
 
 // Creates home page template.
 func mainPageHandler(write http.ResponseWriter, request *http.Request) {
@@ -58,18 +46,14 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 			return
 		}
 
-		dataInput := UserInput{
+		dataInput := parser.UserInput{
 			Function: inputFuncBuffer,
 			InputVal: network.SineGen(newVal),
 			Learning: inputLearningBuffer,
 		}
 
 		// Create an output struct after parsing the user input
-		data := UserOutput{
-			Function:  inputFuncBuffer,
-			OutputVal: network.SineGen(newVal),
-			Learning:  inputLearningBuffer,
-		}
+		data := parser.TakeUserInput(dataInput)
 
 		// The template for /submit is also the home template for now
 		template, err := template.ParseFiles("./template/output.html")
