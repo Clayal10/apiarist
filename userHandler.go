@@ -6,8 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Clayal10/mathGen/pkg/network"
-	"github.com/Clayal10/mathGen/pkg/parser"
+	"github.com/Clayal10/mathGen/lib/parser"
 )
 
 // Creates home page template.
@@ -48,7 +47,7 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 
 		dataInput := parser.UserInput{
 			Function: inputFuncBuffer,
-			InputVal: network.SineGen(newVal),
+			InputVal: newVal,
 			Learning: inputLearningBuffer,
 		}
 

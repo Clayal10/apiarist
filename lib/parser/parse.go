@@ -1,5 +1,7 @@
 package parser
 
+import "github.com/Clayal10/mathGen/lib/network"
+
 // Input will be which math function they want to use and the value to input
 type UserInput struct {
 	Function string
@@ -14,9 +16,11 @@ type UserOutput struct { // This struct will change with increased functionality
 }
 
 func TakeUserInput(u UserInput) UserOutput {
+	opeationResult := network.SineGen(u.InputVal)
+
 	out := UserOutput{
 		Function:  u.Function,
-		OutputVal: u.InputVal,
+		OutputVal: opeationResult,
 		Learning:  u.Learning,
 	}
 
