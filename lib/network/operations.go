@@ -6,19 +6,23 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"time"
 )
 
 // SineGen is a placeholder for what the output of an estimated function will be.
-func SineGen(input float64) float64 {
+func PSOSineGen(input float64) (float64, time.Duration) {
 	swarm := swarm{}
 
+	startTime := time.Now()
 	swarm.initSwarm()
-	swarm.iterateSwarmNoConc()
+	//swarm.iterateSwarmNoConc()
+	swarm.iterateSwarmConc() // About 4 times faster.
+	endTime := time.Now()
 
 	fd, err := os.Create("data-output/data.csv")
 	if err != nil {
 		fmt.Printf("Couldn't create csv file: %v", err)
-		return swarm.bestParticle.runNetwork(input) // just return the value
+		return swarm.bestParticle.runNetwork(input), endTime.Sub(startTime) // just return the value
 	}
 	defer fd.Close()
 
@@ -27,14 +31,18 @@ func SineGen(input float64) float64 {
 
 	var data [][]string
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
-		data = append(data, []string{strconv.FormatFloat(i, 'g', -1, 64), strconv.FormatFloat(swarm.bestParticle.runNetwork(i), 'g', -1, 64)})
+		data = append(
+			data, []string{strconv.FormatFloat(i, 'g', -1, 64),
+				strconv.FormatFloat(swarm.bestParticle.runNetwork(i), 'g', -1, 64),
+				strconv.FormatFloat(math.Sin(i), 'g', -1, 64),
+			})
 	}
 
 	err = writer.WriteAll(data)
 	if err != nil {
 		fmt.Printf("Error writing data: %v", err)
 	}
-	return swarm.bestParticle.runNetwork(input)
+	return swarm.bestParticle.runNetwork(input), endTime.Sub(startTime)
 }
 
 // This function will take a particle, run the network on the interval, and send

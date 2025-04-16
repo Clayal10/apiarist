@@ -1,6 +1,10 @@
 package parser
 
-import "github.com/Clayal10/mathGen/lib/network"
+import (
+	"time"
+
+	"github.com/Clayal10/mathGen/lib/network"
+)
 
 // Input will be which math function they want to use and the value to input
 type UserInput struct {
@@ -13,15 +17,17 @@ type UserOutput struct { // This struct will change with increased functionality
 	Function  string
 	OutputVal float64
 	Learning  string
+	Time      time.Duration
 }
 
 func TakeUserInput(u UserInput) UserOutput {
-	opeationResult := network.SineGen(u.InputVal)
+	opeationResult, waitTime := network.PSOSineGen(u.InputVal)
 
 	out := UserOutput{
 		Function:  u.Function,
 		OutputVal: opeationResult,
 		Learning:  u.Learning,
+		Time:      waitTime,
 	}
 
 	return out

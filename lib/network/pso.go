@@ -8,13 +8,13 @@ import (
 )
 
 const (
-	iterations = 1000
+	iterations = 2000
 	swarmSize  = 30
 	inertia    = 0.95
 	c1         = 0.5
 	c2         = 0.5
-	// 1 -> 3 -> 3 -> 1
-	networkSize = 8
+	// 1 -> 5 -> 5 -> 1
+	networkSize = 12
 )
 
 // This swarm will be the driving force behind the neurons.
@@ -42,6 +42,7 @@ func (s *swarm) iterateSwarmConc() {
 	for i := range swarmSize { // Spin up a go routine for each particle
 		wg.Add(1)
 		go func() {
+			defer wg.Done()
 			for j := range iterations {
 				s.networkCollection[i].updateVelocity(s.bestParticle)
 				s.networkCollection[i].updateWeight()
@@ -81,7 +82,7 @@ func (p *particle) updateVelocity(bestP particle) {
 	r1 := rand.Float64()
 	r2 := rand.Float64()
 
-	for i := 0; i < len(p.velocity); i++ {
+	for i := range p.velocity {
 		vBuf := inertia*p.velocity[i] + c1*r1*(p.bestWeight[i]-p.weight[i]) +
 			c2*r2*(bestP.weight[i]-p.weight[i])
 		switch {
