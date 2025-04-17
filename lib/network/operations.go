@@ -19,6 +19,10 @@ func PSOSineGen(input float64) (float64, time.Duration) {
 	swarm.iterateSwarmConc() // About 4 times faster.
 	endTime := time.Now()
 
+	for i, par := range swarm.networkCollection {
+		fmt.Printf("Fitness %v: %v\n", i, par.fitness)
+	}
+
 	fd, err := os.Create("data-output/data.csv")
 	if err != nil {
 		fmt.Printf("Couldn't create csv file: %v", err)

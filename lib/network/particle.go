@@ -22,6 +22,7 @@ func initParticle() particle {
 		p.velocity[i] = rand.Float64()
 	}
 	p.bestWeight = p.weight
+	p.fitness = math.MaxFloat64
 	return *p
 }
 
