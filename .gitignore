@@ -26,3 +26,6 @@ go.work.sum
 
 # Executable 
 start
+
+# Chaning data file
+data-output/
