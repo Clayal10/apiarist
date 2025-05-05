@@ -61,23 +61,20 @@ func (p *particle) runNetwork(x float64) float64 {
 	// There are specific hard-coded numbers that depend on the network size
 	x = bipolar(x * p.weight[0]) // 0
 
-	var bufRow [5]float64
-	for i := range bufRow {
-		bufRow[i] = bipolar(x * p.weight[i+1]) // 1, 2, 3, 4, 5: first layer
+	var bufSingle float64
+	for i := range 5 {
+		bufSingle += bipolar(x * p.weight[i+1]) // 1, 2, 3, 4, 5: first layer
 
 	}
 
-	var bufSingle float64 = 0
-	for i := range bufRow {
-		bufSingle += bufRow[i] * p.weight[i+6] // 6, 7, 8, 9, 10 second layer
-	}
 	bufSingle = bipolar(bufSingle)
 
-	bufSingle *= p.weight[11] // 11: last node
+	bufSingle *= p.weight[6] // 6: last node
 
 	return bufSingle
 }
 
+// TODO create more activiation functions and include them in various layers.
 func bipolar(x float64) float64 {
 	return float64((1 - math.Pow(math.E, float64(-x))) / (1 + math.Pow(math.E, float64(-x))))
 }

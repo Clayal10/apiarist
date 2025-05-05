@@ -5,14 +5,19 @@ import (
 	"math"
 	"math/rand"
 	"sync"
+
+	"github.com/Clayal10/mathGen/lib/user"
 )
 
-const (
+var (
 	iterations = 2000
-	swarmSize  = 30
 	inertia    = 0.95
 	c1         = 0.5
 	c2         = 0.5
+)
+
+const (
+	swarmSize = 30
 	// 1 -> 5 -> 5 -> 1
 	networkSize = 12
 )
@@ -59,7 +64,12 @@ func (s *swarm) iterateSwarmConc() {
 }
 
 // These values are hard coded for the moment
-func (s *swarm) initSwarm() {
+func (s *swarm) initSwarm(u user.UserInput) {
+	iterations = u.Iterations
+	inertia = u.Inertia
+	c1 = u.CogCoef
+	c2 = u.SocCoef
+
 	for i := 0; i < swarmSize; i++ {
 		s.networkCollection[i] = initParticle()
 	}

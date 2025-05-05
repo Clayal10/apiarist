@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/Clayal10/mathGen/lib/parser"
+	"github.com/Clayal10/mathGen/lib/user"
 )
 
 // Creates home page template.
@@ -28,43 +29,68 @@ func mainPageHandler(write http.ResponseWriter, request *http.Request) {
 // Takes user submission and prepares it for output on a new page
 func submitHandler(write http.ResponseWriter, request *http.Request) {
 	if request.Method == http.MethodPost {
+		var err error
+
 		// Parse the submission form if it is a Post
 		if err := request.ParseForm(); err != nil {
 			fmt.Println("Could not parse form submission")
 			return
 		}
 
+		var iterations int64
+		var inertia float64
+		var cogCoef float64
+		var socCoef float64
 		// Grab the input text box ID
-		inputFuncBuffer := request.FormValue("functionVal")
-		inputValBuffer := request.FormValue("inputVal")
-		inputLearningBuffer := request.FormValue("learning")
+		iterationsString := request.FormValue("iterations")
+		inertiaString := request.FormValue("inertia")
+		cogCoefString := request.FormValue("cog-coef")
+		socCoefString := request.FormValue("soc-coef")
 
-		newVal, err := strconv.ParseFloat(inputValBuffer, 64)
-		if err != nil {
-			fmt.Println("Could not convert to float")
+		if iterations, err = strconv.ParseInt(iterationsString, 10, 64); err != nil {
+			fmt.Println(err)
 			return
 		}
 
-		dataInput := parser.UserInput{
-			Function: inputFuncBuffer,
-			InputVal: newVal,
-			Learning: inputLearningBuffer,
+		if inertia, err = strconv.ParseFloat(inertiaString, 64); err != nil {
+			fmt.Println(err)
+			return
 		}
 
-		// Create an output struct after parsing the user input
-		data := parser.TakeUserInput(dataInput)
+		if cogCoef, err = strconv.ParseFloat(cogCoefString, 64); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		if socCoef, err = strconv.ParseFloat(socCoefString, 64); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		dataInput := user.UserInput{
+			Iterations: int(iterations),
+			Inertia:    inertia,
+			CogCoef:    cogCoef,
+			SocCoef:    socCoef,
+		}
 
 		// The template for /submit is also the home template for now
 		template, err := template.ParseFiles("./template/output.html")
 		if err != nil {
 			fmt.Println("Could not parse template")
+			fmt.Println(err)
 			return
 		}
 
 		// Execute the template
-		if err = template.Execute(write, data); err != nil {
+		if err = template.Execute(write, nil); err != nil {
 			fmt.Println("Could not execute template")
+			fmt.Println(err)
 			return
 		}
+
+		// For now, we don't need the data.
+		go parser.TakeUserInput(dataInput)
+
 	}
 }

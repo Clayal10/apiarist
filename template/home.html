@@ -14,21 +14,29 @@
             <form action="/submit/" method="POST" id="number_submit">
                 <div>
                     <label for="learning">Learning Method:</label>
-                    <select name="learning" id="learning">
-                        <option value="genetic">Genetic Algorithm</option>
-                        <option value="pswarm">Particle Swarm Optimization</option>
-                    </select>
+                    Particle Swarm Optimization
                 </div>
                 <div>
                     <label for="functionVal">Function:</label>
                     Sine
-                    <!--<input type="text" id="functionVal" name="functionVal">-->
                 </div>
                 <div>
-                    <label for="inputVal">Value:</label>
-                    <input type="text" id="inputVal" name="inputVal">
+                    <label for="iterations">Number of Iterations:</label>
+                    <input type="text" id="iterations" name="iterations">
                 </div>
-                <button type="submit" value="Submit">Submit</button>
+                <div>
+                    <label for="inertia">Inertia:</label>
+                    <input type="text" id="inertia" name="inertia">
+                </div>
+                <div>
+                    <label for="cog-coef">Cognitive Coefficient:</label>
+                    <input type="text" id="cog-coef" name="cog-coef">
+                </div>
+                <div>
+                    <label for="soc-coef">Social Coefficient:</label>
+                    <input type="text" id="soc-coef" name="soc-coef">
+                </div>
+                <button type="submit" value="Submit">Start Training</button>
             </form>
         </main>
     </body>
