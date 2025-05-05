@@ -74,7 +74,9 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 			SocCoef:    socCoef,
 		}
 
-		// The template for /submit is also the home template for now
+		// For now, we don't need the data.
+		parser.TakeUserInput(dataInput)
+
 		template, err := template.ParseFiles("./template/output.html")
 		if err != nil {
 			fmt.Println("Could not parse template")
@@ -88,9 +90,5 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 			fmt.Println(err)
 			return
 		}
-
-		// For now, we don't need the data.
-		go parser.TakeUserInput(dataInput)
-
 	}
 }

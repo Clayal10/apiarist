@@ -1,6 +1,7 @@
 package network
 
 import (
+	"encoding/binary"
 	"encoding/csv"
 	"fmt"
 	"math"
@@ -13,6 +14,7 @@ import (
 
 // SineGen is a placeholder for what the output of an estimated function will be.
 func PSOSineGen(u user.UserInput) time.Duration {
+
 	swarm := swarm{}
 
 	startTime := time.Now()
@@ -37,23 +39,28 @@ func PSOSineGen(u user.UserInput) time.Duration {
 	defer writer.Flush()
 
 	var data [][]string
+	var webData []byte
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
+		floatOutput := swarm.bestParticle.runNetwork(i)
+
 		data = append(
 			data, []string{strconv.FormatFloat(i, 'g', -1, 64),
-				strconv.FormatFloat(swarm.bestParticle.runNetwork(i), 'g', -1, 64),
+				strconv.FormatFloat(floatOutput, 'g', -1, 64),
 				strconv.FormatFloat(math.Sin(i), 'g', -1, 64),
 			})
+		// Convert output to a byte slice and append to webData
+		var buf [8]byte
+		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
+		webData = append(webData, buf[:8]...)
 	}
+	// Start serving the web socket
+	go visualDisplay(webData)
 
 	err = writer.WriteAll(data)
 	if err != nil {
 		fmt.Printf("Error writing data: %v", err)
 	}
-	return endTime.Sub(startTime)
-}
 
-// This function will take a particle, run the network on the interval, and send
-// it to the JS.
-func visualDisplay(p *particle) {
+	return endTime.Sub(startTime)
 
 }

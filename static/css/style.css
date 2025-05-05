@@ -16,6 +16,7 @@ header{
     background-color: #08306B;
     color: #F7FBFF;
     width: 100%;
+    margin-bottom: 2em;
     
 }
 
@@ -57,11 +58,8 @@ main{
     font-size: 1.5em;
 }
 
-#canvas {
-    width: 500px;
-    height: 400px;
+canvas {
     border-radius: 20px;
     display: block;
     margin: auto;
-    background-color: #080808;
 }

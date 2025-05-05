@@ -54,7 +54,7 @@ func (s *swarm) iterateSwarmConc() {
 				// Need a mutex lock for this function
 				s.networkCollection[i].fitnessFunction(s)
 				if j%10 == 0 {
-					fmt.Println(j)
+					//fmt.Println(j)
 				}
 
 			}
