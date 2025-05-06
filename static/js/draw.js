@@ -27,7 +27,7 @@ function bytesToFloat(byteArray) {
       for (let j = 0; j < 8; j++) {
         dataView.setUint8(j, byteArray[i + j]);
       }
-      float64Array.push(dataView.getFloat64(0, false)); // Big Endian?
+      float64Array.push(dataView.getFloat64(0, true));
     }
   
     return float64Array;
@@ -39,21 +39,13 @@ websocket.onopen = () => {
     websocket.send('Request for canvas update');
 };
 
-websocket.onmessage = (event) => {
+websocket.onmessage = async(event) => {
     console.log('Message received:', event.data);
 
-    if (event.data instanceof Blob) {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            const arrayBuffer = reader.result;
-            const uint8Array = new Uint8Array(arrayBuffer);
-            console.log('Received data:', uint8Array);
-        }
-    }
-
-    const arrayBuffer = event.data.arrayBuffer();
+    const arrayBuffer = await event.data.arrayBuffer();
     const byteArray = new Uint8Array(arrayBuffer);
+
+    console.log(byteArray);
 
     var graphValues = bytesToFloat(byteArray);
 
