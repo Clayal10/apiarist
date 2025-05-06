@@ -24,10 +24,6 @@ func PSOSineGen(u user.UserInput) time.Duration {
 
 	endTime := time.Now()
 
-	for i, par := range swarm.networkCollection {
-		fmt.Printf("Fitness %v: %v\n", i, par.fitness)
-	}
-
 	fd, err := os.Create("data-output/data.csv")
 	if err != nil {
 		fmt.Printf("Couldn't create csv file: %v", err)
@@ -53,6 +49,7 @@ func PSOSineGen(u user.UserInput) time.Duration {
 		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
 		webData = append(webData, buf[:8]...)
 	}
+	fmt.Println(webData)
 	// Start serving the web socket
 	go visualDisplay(webData)
 
