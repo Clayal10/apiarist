@@ -62,13 +62,25 @@ const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, val
     */
     
     ctx.beginPath()
-    ctx.fillStyle = "#000000";
+    ctx.lineWidth = 2;
+    ctx.fillStyle = "#0000FF";
     let pos = 0
     for(let i = 0; i< values.length-1; i++){
         ctx.moveTo(pos, rangeCalc(values[i], canvas.height));
         ctx.lineTo(pos+interval, rangeCalc(values[i+1], canvas.height));
         ctx.stroke();
         pos += interval
+    }
+    pos = 0;
+    ctx.fillStyle = "#000000";
+    var piInterval = (Math.PI*6)/values.length
+    for(let pi = -Math.PI*3; pi < Math.PI*3; pi += piInterval){
+        // Draw Real sine wave
+        ctx.moveTo(pos, rangeCalc(Math.sin(pi), canvas.height));
+        ctx.lineTo(pos+interval, rangeCalc(Math.sin(pi+piInterval), canvas.height));
+        ctx.stroke();
+        pos += interval
+        console.log(pos)
     }
     ctx.closePath()
 }
