@@ -1,7 +1,5 @@
 const websocket = new WebSocket("ws://localhost:8201/ws")
 
-
-
 /* WebSocket actions*/
 websocket.onopen = () => {
     console.log('Connected to WebSocket');
@@ -13,8 +11,6 @@ websocket.onmessage = async(event) => {
 
     const arrayBuffer = await event.data.arrayBuffer();
     const byteArray = new Uint8Array(arrayBuffer);
-
-    console.log(byteArray);
 
     var graphValues = bytesToFloat(byteArray);
 
@@ -41,15 +37,59 @@ const bytesToFloat = (byteArray: Uint8Array): number[] => {
     return arr;
 }
 
+// Main operating logic
 const loadGraph = (values: number[]) => {
     try{
         var canvas = setupCanvas("canvas");
         var ctx = setupContext(canvas);
         drawBackGround(canvas, ctx);
-        console.log(values);
+        drawGraph(canvas, ctx, values)
     } catch(error){
         console.log(error);
     }
+}
+
+const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, values: number[]) => {
+    const interval = canvas.width / values.length;
+    /* Graph of the canvas
+      0 100 200 300 400 500 600 700 800  
+    100
+    200
+    300
+    400
+    500
+    600
+    */
+    
+    ctx.beginPath()
+    ctx.fillStyle = "#000000";
+    let pos = 0
+    for(let i = 0; i< values.length-1; i++){
+        ctx.moveTo(pos, rangeCalc(values[i], canvas.height));
+        ctx.lineTo(pos+interval, rangeCalc(values[i+1], canvas.height));
+        ctx.stroke();
+        pos += interval
+    }
+    ctx.closePath()
+}
+
+// We'll get values between -1 and 1, and we need to map those to:
+//  -1 = canvas.height (600)
+//   1 = 0
+// Function will take in the value and the canvas height (since it could be dynamic),
+// and return the canvas height pos needed.
+const rangeCalc = (val: number, height: number): number => {
+    const zero = height/2; // need to move above or below
+    const scale = height/2;
+    if (val === 0){
+        return zero
+    }
+
+    var diff = Math.abs(val) * scale
+    if (val < 0){
+        return zero + diff
+    }
+    return zero - diff
 }
 
 const setupCanvas = (id: string): HTMLCanvasElement => {
