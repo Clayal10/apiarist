@@ -27,5 +27,8 @@ go.work.sum
 # Executable 
 start
 
-# Chaning data file
+# Changing data file
 data-output/
+
+# Minified JS
+dist/

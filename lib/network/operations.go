@@ -49,7 +49,6 @@ func PSOSineGen(u user.UserInput) time.Duration {
 		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
 		webData = append(webData, buf[:8]...)
 	}
-	fmt.Println(webData)
 	// Start serving the web socket
 	go visualDisplay(webData)
 

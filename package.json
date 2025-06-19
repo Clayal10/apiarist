@@ -1,0 +1,24 @@
+{
+  "name": "mathgen",
+  "version": "1.0.0",
+  "description": "This is my project for learning Go! It runs on Linux. To start the web server with this source code, run `make run` and to quit, hit `ctrl + c` (or close your terminal) and run `make clean`.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "go": "tsc && make run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Clayal10/mathGen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Clayal10/mathGen/issues"
+  },
+  "homepage": "https://github.com/Clayal10/mathGen#readme"
+}
