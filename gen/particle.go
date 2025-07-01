@@ -28,7 +28,7 @@ func initParticle() particle {
 
 // This function is a little 'learning algorithm specific', but nil can be passed in if you're
 // not using PSO
-func (p *particle) fitnessFunction(s *swarm) {
+func (p *particle) fitnessFunction(s *Swarm) {
 	errorBuf := 0.0
 	counter := 0.0
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {

@@ -20,14 +20,14 @@ const (
 )
 
 // This swarm will be the driving force behind the neurons.
-type swarm struct {
+type Swarm struct {
 	networkCollection [swarmSize]particle // Size of the swarm
 	bestParticle      particle
 	mu                sync.Mutex
 	shouldStop        bool
 }
 
-func (s *swarm) GetValues() (data []byte) {
+func (s *Swarm) GetValues() (data []byte) {
 	s.shouldStop = true
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
 		buf := []byte{}
@@ -38,7 +38,7 @@ func (s *swarm) GetValues() (data []byte) {
 	return
 }
 
-func (s *swarm) iterateSwarmConc() {
+func (s *Swarm) iterateSwarmConc() {
 	var wg sync.WaitGroup
 	for i := range swarmSize { // Spin up a go routine for each particle
 		wg.Add(1)
@@ -54,7 +54,7 @@ func (s *swarm) iterateSwarmConc() {
 }
 
 // These values are hard coded for the moment
-func (s *swarm) initSwarm(u UserInput) {
+func (s *Swarm) InitSwarm(u UserInput) {
 	inertia = u.Inertia
 	c1 = u.CogCoef
 	c2 = u.SocCoef
@@ -65,7 +65,7 @@ func (s *swarm) initSwarm(u UserInput) {
 	s.bestParticle = s.findBestParticle()
 }
 
-func (s *swarm) findBestParticle() particle {
+func (s *Swarm) findBestParticle() particle {
 	bestIndex := 0
 	bestFitness := float64(math.MaxFloat64)
 	for i := 0; i < swarmSize; i++ {

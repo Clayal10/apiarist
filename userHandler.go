@@ -73,7 +73,9 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 			SocCoef:    socCoef,
 		}
 
-		go gen.PSOSineGen(dataInput)
+		swarm = &gen.Swarm{}
+		swarm.InitSwarm(dataInput)
+		go gen.PSOSineGen(swarm, dataInput)
 
 		/*
 			template, err := template.ParseFiles("./template/output.html")
@@ -93,8 +95,14 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 	}
 }
 
+var swarm *gen.Swarm
+
 func graphHandler(write http.ResponseWriter, request *http.Request) {
 	if request.Method == http.MethodGet {
-		fmt.Println("Graphing!!")
+		if swarm == nil {
+			fmt.Println("Swarm not initialized.")
+			return
+		}
+		data := swarm.GetValues()
 	}
 }

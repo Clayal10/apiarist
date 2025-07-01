@@ -9,11 +9,8 @@ import (
 	"strconv"
 )
 
-func PSOSineGen(u UserInput) {
+func PSOSineGen(swarm *Swarm, u UserInput) {
 
-	swarm := swarm{}
-
-	swarm.initSwarm(u)
 	for {
 		if swarm.shouldStop {
 			break
