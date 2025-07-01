@@ -8,11 +8,12 @@ import (
 func main() {
 	http.HandleFunc("/", mainPageHandler)
 	http.HandleFunc("/submit/", submitHandler)
+	http.HandleFunc("/graph/", graphHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	err := http.ListenAndServe(":8200", nil)
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

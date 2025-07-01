@@ -1,4 +1,4 @@
-package network
+package gen
 
 import (
 	"encoding/binary"
@@ -7,27 +7,24 @@ import (
 	"math"
 	"os"
 	"strconv"
-	"time"
-
-	"github.com/Clayal10/mathGen/lib/user"
 )
 
-// SineGen is a placeholder for what the output of an estimated function will be.
-func PSOSineGen(u user.UserInput) time.Duration {
+func PSOSineGen(u UserInput) {
 
 	swarm := swarm{}
 
-	startTime := time.Now()
 	swarm.initSwarm(u)
-	//swarm.iterateSwarmNoConc()
-	swarm.iterateSwarmConc() // About 4 times faster.
-
-	endTime := time.Now()
+	for {
+		if swarm.shouldStop {
+			break
+		}
+		swarm.iterateSwarmConc()
+	}
 
 	fd, err := os.Create("data-output/data.csv")
 	if err != nil {
 		fmt.Printf("Couldn't create csv file: %v", err)
-		return endTime.Sub(startTime) // just return the value
+		return
 	}
 	defer fd.Close()
 
@@ -35,7 +32,6 @@ func PSOSineGen(u user.UserInput) time.Duration {
 	defer writer.Flush()
 
 	var data [][]string
-	var webData []byte
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
 		floatOutput := swarm.bestParticle.runNetwork(i)
 
@@ -47,16 +43,10 @@ func PSOSineGen(u user.UserInput) time.Duration {
 		// Convert output to a byte slice and append to webData
 		var buf [8]byte
 		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
-		webData = append(webData, buf[:8]...)
 	}
-	// Start serving the web socket
-	go visualDisplay(webData)
 
 	err = writer.WriteAll(data)
 	if err != nil {
 		fmt.Printf("Error writing data: %v", err)
 	}
-
-	return endTime.Sub(startTime)
-
 }

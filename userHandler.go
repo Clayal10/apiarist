@@ -6,8 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Clayal10/mathGen/lib/parser"
-	"github.com/Clayal10/mathGen/lib/user"
+	"github.com/Clayal10/mathGen/gen"
 )
 
 // Creates home page template.
@@ -67,28 +66,35 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 			return
 		}
 
-		dataInput := user.UserInput{
+		dataInput := gen.UserInput{
 			Iterations: int(iterations),
 			Inertia:    inertia,
 			CogCoef:    cogCoef,
 			SocCoef:    socCoef,
 		}
 
-		// For now, we don't need the data.
-		parser.TakeUserInput(dataInput)
+		go gen.PSOSineGen(dataInput)
 
-		template, err := template.ParseFiles("./template/output.html")
-		if err != nil {
-			fmt.Println("Could not parse template")
-			fmt.Println(err)
-			return
-		}
+		/*
+			template, err := template.ParseFiles("./template/output.html")
+			if err != nil {
+				fmt.Println("Could not parse template")
+				fmt.Println(err)
+				return
+			}
 
-		// Execute the template
-		if err = template.Execute(write, nil); err != nil {
-			fmt.Println("Could not execute template")
-			fmt.Println(err)
-			return
-		}
+			// Execute the template
+			if err = template.Execute(write, nil); err != nil {
+				fmt.Println("Could not execute template")
+				fmt.Println(err)
+				return
+			}
+		*/
+	}
+}
+
+func graphHandler(write http.ResponseWriter, request *http.Request) {
+	if request.Method == http.MethodGet {
+		fmt.Println("Graphing!!")
 	}
 }

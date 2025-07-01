@@ -1,19 +1,16 @@
-package network
+package gen
 
 import (
-	"fmt"
+	"encoding/binary"
 	"math"
 	"math/rand"
 	"sync"
-
-	"github.com/Clayal10/mathGen/lib/user"
 )
 
 var (
-	iterations = 2000
-	inertia    = 0.95
-	c1         = 0.5
-	c2         = 0.5
+	inertia = 0.95
+	c1      = 0.5
+	c2      = 0.5
 )
 
 const (
@@ -27,19 +24,18 @@ type swarm struct {
 	networkCollection [swarmSize]particle // Size of the swarm
 	bestParticle      particle
 	mu                sync.Mutex
+	shouldStop        bool
 }
 
-func (s *swarm) iterateSwarmNoConc() {
-	for i := range iterations {
-		for j := range swarmSize {
-			s.networkCollection[j].updateVelocity(s.bestParticle)
-			s.networkCollection[j].updateWeight()
-			s.networkCollection[j].fitnessFunction(s)
-		}
-		if i%10 == 0 {
-			fmt.Println(i)
-		}
+func (s *swarm) GetValues() (data []byte) {
+	s.shouldStop = true
+	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
+		buf := []byte{}
+		floatOutput := s.bestParticle.runNetwork(i)
+		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
+		data = append(data, buf[:8]...)
 	}
+	return
 }
 
 func (s *swarm) iterateSwarmConc() {
@@ -48,24 +44,17 @@ func (s *swarm) iterateSwarmConc() {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			for j := range iterations {
-				s.networkCollection[i].updateVelocity(s.bestParticle)
-				s.networkCollection[i].updateWeight()
-				// Need a mutex lock for this function
-				s.networkCollection[i].fitnessFunction(s)
-				if j%10 == 0 {
-					//fmt.Println(j)
-				}
-
-			}
+			s.networkCollection[i].updateVelocity(s.bestParticle)
+			s.networkCollection[i].updateWeight()
+			// Need a mutex lock for this function
+			s.networkCollection[i].fitnessFunction(s)
 		}()
 	}
 	wg.Wait()
 }
 
 // These values are hard coded for the moment
-func (s *swarm) initSwarm(u user.UserInput) {
-	iterations = u.Iterations
+func (s *swarm) initSwarm(u UserInput) {
 	inertia = u.Inertia
 	c1 = u.CogCoef
 	c2 = u.SocCoef
