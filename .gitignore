@@ -32,3 +32,4 @@ data-output/
 
 # Minified JS
 dist/
+node_modules/

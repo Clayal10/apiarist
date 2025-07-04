@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/Clayal10/mathGen/issues"
   },
-  "homepage": "https://github.com/Clayal10/mathGen#readme"
+  "homepage": "https://github.com/Clayal10/mathGen#readme",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
 }

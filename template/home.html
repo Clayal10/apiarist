@@ -1,49 +1,40 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
-        <title>MathGen</title>
-    </head>
-    <body>
-        <header>
-            <h1>MathGen</h1>
-        </header>
-        <main>
-            <form action="/submit/" method="POST" id="number_submit">
-                <div>
-                    <label for="learning">Learning Method:</label>
-                    Particle Swarm Optimization
-                </div>
-                <div>
-                    <label for="functionVal">Function:</label>
-                    Sine
-                </div>
-                <div>
-                    <label for="iterations">Number of Iterations:</label>
-                    <input type="text" id="iterations" name="iterations">
-                </div>
-                <div>
-                    <label for="inertia">Inertia:</label>
-                    <input type="text" id="inertia" name="inertia">
-                </div>
-                <div>
-                    <label for="cog-coef">Cognitive Coefficient:</label>
-                    <input type="text" id="cog-coef" name="cog-coef">
-                </div>
-                <div>
-                    <label for="soc-coef">Social Coefficient:</label>
-                    <input type="text" id="soc-coef" name="soc-coef">
-                </div>
-                <button type="submit" value="Submit">Start Training</button>
-            </form>
-            <form action="/graph/" method="GET">
-                <button type="submit" value="Graph">Graph Values</button>
-            </form>
-            
-            <canvas id="canvas" width="800" height="600"></canvas>
-            <script src="/static/dist/draw.js"></script>
-        </main>
-    </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+  <title>MathGen</title>
+</head>
+
+<body>
+  <header>
+    <h1>MathGen</h1>
+  </header>
+  <main>
+    <!--Change this to be done in javascript-->
+    <div id="submit-values">
+      <div class="value">
+        Iterations: <input type="text" id="iterations-value">
+      </div>
+      <div class="value">
+        Inertia: <input type="text" id="inertia-value">
+      </div>
+      <div class="value">
+        Cognitive Coefficient: <input type="text" id="cog-coef-value">
+      </div>
+      <div class="value">
+        Social Coefficient<input type="text" id="soc-coef-value">
+      </div>
+    </div>
+    
+    <button onclick="sendInfo()">Send Data</button>
+    <button onclick="loadAndGraph()">Graph Values</button>
+
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <script src="/static/dist/draw.js"></script>
+  </main>
+</body>
+
 </html>

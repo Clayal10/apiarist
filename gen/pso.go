@@ -30,7 +30,7 @@ type Swarm struct {
 func (s *Swarm) GetValues() (data []byte) {
 	s.shouldStop = true
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
-		buf := []byte{}
+		buf := make([]byte, 8)
 		floatOutput := s.bestParticle.runNetwork(i)
 		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
 		data = append(data, buf[:8]...)
@@ -54,7 +54,7 @@ func (s *Swarm) iterateSwarmConc() {
 }
 
 // These values are hard coded for the moment
-func (s *Swarm) InitSwarm(u UserInput) {
+func (s *Swarm) InitSwarm(u *UserInput) {
 	inertia = u.Inertia
 	c1 = u.CogCoef
 	c2 = u.SocCoef

@@ -35,13 +35,13 @@ main{
     color: #08519C;
 }
 
-#number_submit {
+#submit-values {
     padding: 2em;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-#number_submit button {
+#submit-values button {
     width: 25%;
     background-color: #08306B;
     color: #F7FBFF;
@@ -49,7 +49,7 @@ main{
     font-size: 2em;
     border-radius: 15px;
 }
-#number_submit div{
+#submit-values div{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
