@@ -7,8 +7,8 @@ interface UserInput {
   CogCoef: number;
   SocCoef: number;
 }
-interface GraphValues{
-  Data: Uint8Array;
+interface GraphData{
+  Data: number[];
 }
 
 
@@ -58,8 +58,8 @@ async function getData(): Promise<number[]> {
   if (!response.ok) {
     throw new Error(`Error code: ${response.status}`);
   }
-  const data: GraphValues = await response.json();
-  return bytesToFloat(data.Data);
+  const data = await (response.json()) as GraphData;
+  return data.Data;
 }
 
 

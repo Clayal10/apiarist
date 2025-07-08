@@ -54,7 +54,7 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 }
 
 type GraphData struct {
-	Data []byte
+	Data []float64
 }
 
 func graphHandler(write http.ResponseWriter, request *http.Request) {
@@ -66,15 +66,15 @@ func graphHandler(write http.ResponseWriter, request *http.Request) {
 		}
 		fmt.Println("Starting To Generate Network")
 
-		data := GraphData{}
-		data.Data = swarm.GetValues()
+		data := GraphData{
+			Data: swarm.GetValues(),
+		}
 		dataJSON, err := json.Marshal(data)
 		if err != nil {
 			write.WriteHeader(http.StatusInternalServerError)
 			fmt.Println("Could not marshal data for JSON")
 			return
 		}
-		fmt.Println(dataJSON)
 		write.Write(dataJSON)
 	}
 }

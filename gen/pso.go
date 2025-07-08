@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"encoding/binary"
 	"math"
 	"math/rand"
 	"sync"
@@ -27,13 +26,10 @@ type Swarm struct {
 	shouldStop        bool
 }
 
-func (s *Swarm) GetValues() (data []byte) {
+func (s *Swarm) GetValues() (data []float64) {
 	s.shouldStop = true
 	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
-		buf := make([]byte, 8)
-		floatOutput := s.bestParticle.runNetwork(i)
-		binary.LittleEndian.PutUint64(buf[:], math.Float64bits(floatOutput))
-		data = append(data, buf[:8]...)
+		data = append(data, s.bestParticle.runNetwork(i))
 	}
 	return
 }
