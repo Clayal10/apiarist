@@ -1,4 +1,4 @@
-package gen
+package swarm
 
 import (
 	"encoding/binary"
@@ -7,9 +7,34 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"time"
 )
 
-func PSOSineGen(swarm *Swarm, u *UserInput) {
+type UserInput struct {
+	Inertia float64
+	// How much personal best impacts the particle.
+	CogCoef float64
+	// How much global best impacts the particle.
+	SocCoef float64
+}
+
+type UserOutput struct {
+	Time time.Duration
+}
+
+// These values are hard coded for the moment
+func (s *Swarm) InitSwarm(u *UserInput) {
+	inertia = u.Inertia
+	c1 = u.CogCoef
+	c2 = u.SocCoef
+
+	for i := 0; i < swarmSize; i++ {
+		s.networkCollection[i] = initParticle()
+	}
+	s.bestParticle = s.findBestParticle()
+}
+
+func (swarm *Swarm) PSOSineGen(u *UserInput) {
 
 	for {
 		if swarm.shouldStop {
