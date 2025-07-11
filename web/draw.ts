@@ -2,7 +2,6 @@ const valueAPI = "/graph/";
 const userAPI = "/submit/";
 
 interface UserInput {
-  Iterations: number;
   Inertia: number;
   CogCoef: number;
   SocCoef: number;
@@ -15,7 +14,6 @@ interface GraphData{
 async function sendInfo() {
   try {
     const user: UserInput = {
-      Iterations: getElementValue("iterations-value"),
       Inertia: getElementValue("inertia-value"),
       CogCoef: getElementValue("cog-coef-value"),
       SocCoef: getElementValue("soc-coef-value")

@@ -34,7 +34,7 @@ body{
 main{
     color: #08519C;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 #rest-methods{
@@ -46,38 +46,32 @@ main{
 }
 
 .rest-button{
-    font-size: 24px;
-    padding: 2em;
+    font-size: 2em;
+    padding: 1.5em;
     border-radius: 15px;
     justify-content: center;
     width: 30%;
+    min-width: 300px;
 }
 
 #submit-values {
     padding: 2em;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2em;
     align-items: center;
-}
-#submit-values button {
-    width: 50%;
-    background-color: #08306B;
-    color: #F7FBFF;
-    padding: 1em;
-    font-size: 2em;
-    border-radius: 15px;
 }
 #submit-values div{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 60%;
     margin-bottom: 2.5em;
     font-size: 1.5em;
 }
 
-#left-side{
-    width: 50%;
+#top{
+    width: 100%;
 }
 
 canvas {
