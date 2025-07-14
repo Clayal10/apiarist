@@ -1,15 +1,27 @@
 const valueAPI = "/graph/";
 const userAPI = "/submit/";
 
+const startTraining = "Start Training";
+const training = "Training..."
+
 interface UserInput {
   Inertia: number;
   CogCoef: number;
   SocCoef: number;
 }
-interface GraphData{
+interface GraphData {
   Data: number[];
 }
 
+window.onload = (event) => {
+  try {
+    const canvas = setupCanvas("canvas");
+    const ctx = setupContext(canvas)
+    drawBackGround(canvas, ctx);
+  } catch (error) {
+    console.error(error)
+  }
+};
 
 async function sendInfo() {
   try {
@@ -28,10 +40,12 @@ async function sendInfo() {
       body: JSON.stringify(user)
     });
 
-    if (!response.ok){
+    if (!response.ok) {
       const err = await response.json();
       throw new Error(err.message);
     }
+    const button = document.getElementById("rest-button-send") as HTMLButtonElement;
+    button.innerText = training;
   } catch (e) {
     console.error("Error in parsing html input: ", e);
     return;
@@ -45,6 +59,8 @@ async function loadAndGraph() {
     if (data) {
       loadGraph(data);
     }
+    const button = document.getElementById("rest-button-send") as HTMLButtonElement;
+    button.innerText = startTraining;
   } catch (e) {
     console.error("Error in retreiving data: ", e);
     return;
@@ -76,17 +92,28 @@ const bytesToFloat = (byteArray: Uint8Array): number[] => {
   return arr;
 }
 
+const clearGraph = () => {
+  const canvas = setupCanvas("canvas");
+  const ctx = setupContext(canvas);
+  ctx.beginPath();
+  ctx.fillStyle = '#F7FBFF';
+  ctx.rect(0, 0, canvas.width, canvas.height)
+  ctx.fill();
+  ctx.closePath();
+  drawBackGround(canvas, ctx)
+};
+
 // Main operating logic
 const loadGraph = (values: number[]) => {
   try {
-    var canvas = setupCanvas("canvas");
-    var ctx = setupContext(canvas);
+    const canvas = setupCanvas("canvas");
+    const ctx = setupContext(canvas);
     drawBackGround(canvas, ctx);
     drawGraph(canvas, ctx, values)
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, values: number[]) => {
   const interval = canvas.width / values.length;
@@ -101,8 +128,8 @@ const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, val
   */
 
   ctx.beginPath()
-  ctx.lineWidth = 2;
-  ctx.fillStyle = "#0000FF";
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#08306B';
   let pos = 0
   for (let i = 0; i < values.length - 1; i++) {
     ctx.moveTo(pos, rangeCalc(values[i], canvas.height));
@@ -110,19 +137,8 @@ const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, val
     ctx.stroke();
     pos += interval
   }
-  pos = 0;
-  ctx.fillStyle = "#000000";
-  var piInterval = (Math.PI * 6) / values.length
-  for (let pi = -Math.PI * 3; pi < Math.PI * 3; pi += piInterval) {
-    // Draw Real sine wave
-    ctx.moveTo(pos, rangeCalc(Math.sin(pi), canvas.height));
-    ctx.lineTo(pos + interval, rangeCalc(Math.sin(pi + piInterval), canvas.height));
-    ctx.stroke();
-    pos += interval
-    console.log(pos)
-  }
-  ctx.closePath()
-}
+  ctx.closePath();
+};
 
 // We'll get values between -1 and 1, and we need to map those to:
 //  -1 = canvas.height (600)
@@ -161,8 +177,8 @@ const setupContext = (canvas: HTMLCanvasElement): CanvasRenderingContext2D => {
 
 const drawBackGround = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
   ctx.beginPath();
-  ctx.fillStyle = "#a0a0a0";
-  ctx.lineWidth = 5;
+  ctx.strokeStyle = '#010101';
+  ctx.lineWidth = 3;
   ctx.moveTo(0, canvas.height / 2);
   ctx.lineTo(canvas.width, canvas.height / 2);
   ctx.stroke();
@@ -171,6 +187,22 @@ const drawBackGround = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
   ctx.lineTo(canvas.width / 2, canvas.height);
 
   ctx.stroke();
+  ctx.closePath();
+
+  const interval = canvas.width / 1000;
+  ctx.beginPath();
+  ctx.lineWidth = 1;
+  let pos = 0;
+  ctx.strokeStyle = '#888888';
+  var piInterval = (Math.PI * 6) / 1000;
+  for (let pi = -Math.PI * 3; pi < Math.PI * 3; pi += piInterval) {
+    // Draw Real sine wave
+    ctx.moveTo(pos, rangeCalc(Math.sin(pi), canvas.height));
+    ctx.lineTo(pos + interval, rangeCalc(Math.sin(pi + piInterval), canvas.height));
+    ctx.stroke();
+    pos += interval
+  }
+  ctx.closePath()
 }
 
 const getElementValue = (id: string): number => {
