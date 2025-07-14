@@ -8,12 +8,6 @@ import (
 
 var Function = math.Sin
 
-var (
-	inertia = 0.95
-	c1      = 0.5
-	c2      = 0.5
-)
-
 const (
 	swarmSize = 30
 	// 1 -> 5 -> 5 -> 1
@@ -26,6 +20,10 @@ type Swarm struct {
 	bestParticle      particle
 	mu                sync.Mutex
 	shouldStop        bool
+
+	inertia float64
+	c1      float64
+	c2      float64
 }
 
 // Each particle holds a neural network
@@ -77,9 +75,8 @@ func (p *particle) fitnessFunction(s *Swarm) {
 
 }
 
-// This is me avoiding difficult linear algebra.
 func (p *particle) runNetwork(x float64) float64 {
-	// There are specific hard-coded numbers that depend on the network size
+	// get ready for matrix multiplication
 	x = bipolar(x * p.weight[0]) // 0
 
 	var bufSingle float64
@@ -100,21 +97,13 @@ func bipolar(x float64) float64 {
 	return float64((1 - math.Pow(math.E, float64(-x))) / (1 + math.Pow(math.E, float64(-x))))
 }
 
-func (s *Swarm) GetValues() (data []float64) {
-	s.shouldStop = true
-	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
-		data = append(data, s.bestParticle.runNetwork(i))
-	}
-	return
-}
-
 func (s *Swarm) iterateSwarmConc() {
 	var wg sync.WaitGroup
 	for i := range swarmSize { // Spin up a go routine for each particle
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			s.networkCollection[i].updateVelocity(s.bestParticle)
+			s.networkCollection[i].updateVelocity(s)
 			s.networkCollection[i].updateWeight()
 			// Need a mutex lock for this function
 			s.networkCollection[i].fitnessFunction(s)
@@ -135,13 +124,13 @@ func (s *Swarm) findBestParticle() particle {
 	return s.networkCollection[bestIndex]
 }
 
-func (p *particle) updateVelocity(bestP particle) {
+func (p *particle) updateVelocity(s *Swarm) {
 	r1 := rand.Float64()
 	r2 := rand.Float64()
 
 	for i := range p.velocity {
-		vBuf := inertia*p.velocity[i] + c1*r1*(p.bestWeight[i]-p.weight[i]) +
-			c2*r2*(bestP.weight[i]-p.weight[i])
+		vBuf := s.inertia*p.velocity[i] + s.c1*r1*(p.bestWeight[i]-p.weight[i]) +
+			s.c2*r2*(s.bestParticle.weight[i]-p.weight[i])
 		switch {
 		case vBuf < -1:
 			vBuf = -1

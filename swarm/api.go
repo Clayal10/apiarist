@@ -24,9 +24,9 @@ type UserOutput struct {
 
 // These values are hard coded for the moment
 func (s *Swarm) InitSwarm(u *UserInput) {
-	inertia = u.Inertia
-	c1 = u.CogCoef
-	c2 = u.SocCoef
+	s.inertia = u.Inertia
+	s.c1 = u.CogCoef
+	s.c2 = u.SocCoef
 
 	for i := 0; i < swarmSize; i++ {
 		s.networkCollection[i] = initParticle()
@@ -71,4 +71,14 @@ func (swarm *Swarm) PSOSineGen(u *UserInput) {
 	if err != nil {
 		fmt.Printf("Error writing data: %v", err)
 	}
+}
+
+func (s *Swarm) GetValues() (data []float64) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.shouldStop = true
+	for i := -3 * math.Pi; i < 3*math.Pi; i += 0.05 {
+		data = append(data, s.bestParticle.runNetwork(i))
+	}
+	return
 }
