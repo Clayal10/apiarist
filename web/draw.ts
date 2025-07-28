@@ -96,7 +96,7 @@ const clearGraph = () => {
   const canvas = setupCanvas("canvas");
   const ctx = setupContext(canvas);
   ctx.beginPath();
-  ctx.fillStyle = '#F7FBFF';
+  ctx.fillStyle = '#fff7e6';
   ctx.rect(0, 0, canvas.width, canvas.height)
   ctx.fill();
   ctx.closePath();
@@ -129,7 +129,7 @@ const drawGraph = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, val
 
   ctx.beginPath()
   ctx.lineWidth = 1;
-  ctx.strokeStyle = '#08306B';
+  ctx.strokeStyle = '#944d04';
   let pos = 0
   for (let i = 0; i < values.length - 1; i++) {
     ctx.moveTo(pos, rangeCalc(values[i], canvas.height));
@@ -177,7 +177,7 @@ const setupContext = (canvas: HTMLCanvasElement): CanvasRenderingContext2D => {
 
 const drawBackGround = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) => {
   ctx.beginPath();
-  ctx.strokeStyle = '#010101';
+  ctx.strokeStyle = '#000000';
   ctx.lineWidth = 3;
   ctx.moveTo(0, canvas.height / 2);
   ctx.lineTo(canvas.width, canvas.height / 2);
@@ -193,7 +193,7 @@ const drawBackGround = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D
   ctx.beginPath();
   ctx.lineWidth = 1;
   let pos = 0;
-  ctx.strokeStyle = '#888888';
+  ctx.strokeStyle = '#200c05';
   var piInterval = (Math.PI * 6) / 1000;
   for (let pi = -Math.PI * 3; pi < Math.PI * 3; pi += piInterval) {
     // Draw Real sine wave

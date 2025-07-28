@@ -30,7 +30,7 @@ var s *swarm.Swarm
 // Creates home page template.
 func mainPageHandler(write http.ResponseWriter, request *http.Request) {
 	//Reads content of html file and returns a template
-	template, err := template.ParseFiles("./template/home.html")
+	template, err := template.ParseFiles("./static/html/home.html")
 	if err != nil {
 		fmt.Println("Could not parse template")
 		return

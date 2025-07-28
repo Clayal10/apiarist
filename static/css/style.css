@@ -1,10 +1,6 @@
 /*
     Color Pallette:
-        - #08306B
-        - #08519C
-
-        - #9ECAE1
-        - #F7FbFF
+	
 */
 
 * {
@@ -13,25 +9,28 @@
 }
 
 header{
-    background-color: #08306B;
-    color: #F7FBFF;
+    background-color: #944d04;
+    color: #fff7e6;
     width: 100%;
     height: 15vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1{
-    text-align: center;
     font-size: 4em;
     padding: .2em;
+    padding-bottom: .1em;
 }
 
 body{
-    background-color: #F7FBFF;
+    background-color: #fff7e6;
     height: 100vh;
 }
 
 main{
-    color: #08519C;
+    color: #944c04;
     display: flex;
     flex-direction: column;
     height: 80vh;
