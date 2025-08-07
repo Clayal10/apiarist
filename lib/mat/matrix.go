@@ -1,7 +1,9 @@
 package mat
 
+import "math/rand/v2"
+
 type Matrix struct {
-	width, height int
+	Width, Height int
 	Values        [][]float64
 }
 
@@ -17,16 +19,16 @@ func NewMatrix(input []float64, height, width int) Matrix {
 	return m
 }
 func Mul(one, two Matrix) Matrix {
-	if one.width != two.height {
+	if one.Width != two.Height {
 		transpose(two)
 	}
 
-	m := newBlankMatrix(one.height, two.width)
+	m := newBlankMatrix(one.Height, two.Width)
 
-	for i := range one.height {
-		for j := range two.width {
+	for i := range one.Height {
+		for j := range two.Width {
 			var sum float64 = 0
-			for k := range one.width {
+			for k := range one.Width {
 				sum += one.Values[i][k] * two.Values[k][j]
 			}
 			m.Values[i][j] = sum
@@ -35,10 +37,36 @@ func Mul(one, two Matrix) Matrix {
 	}
 	return m
 }
+
+func NewRandomMatrixValues(height, width int) ([]float64, int, int) {
+	list := make([]float64, 0, height*width)
+	for i := range list {
+		list[i] = rand.Float64()
+	}
+	return list, height, width
+}
+
+// GetSize returns the number of values used in the matrix.
+func (mat Matrix) GetSize() int {
+	return mat.Height * mat.Width
+}
+
+func (mat Matrix) GetValueList() []float64 {
+	list := make([]float64, 0, mat.Height*mat.Width)
+	index := 0
+	for i := range mat.Height {
+		for j := range mat.Width {
+			list[index] = mat.Values[i][j]
+			index++
+		}
+	}
+	return list
+}
+
 func newBlankMatrix(height, width int) Matrix {
 	m := Matrix{
-		width:  width,
-		height: height,
+		Width:  width,
+		Height: height,
 		Values: make([][]float64, height),
 	}
 	for i := range m.Values {
@@ -48,13 +76,13 @@ func newBlankMatrix(height, width int) Matrix {
 }
 
 func transpose(m Matrix) Matrix {
-	v := make([]float64, m.width*m.height)
+	v := make([]float64, m.Width*m.Height)
 	count := 0
-	for i := range m.height {
-		for j := range m.width {
+	for i := range m.Height {
+		for j := range m.Width {
 			v[count] = m.Values[i][j] // flips values
 			count++
 		}
 	}
-	return NewMatrix(v, m.height, m.width)
+	return NewMatrix(v, m.Height, m.Width)
 }

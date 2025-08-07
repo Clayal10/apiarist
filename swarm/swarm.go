@@ -4,19 +4,25 @@ import (
 	"math"
 	"math/rand"
 	"sync"
+
+	"github.com/Clayal10/mathGen/lib/mat"
 )
 
 var Function = math.Sin
 
 const (
 	swarmSize = 30
-	// 1 -> 5 -> 5 -> 1
-	networkSize = 12
+	// first layer is 1, second and second to last is 1xheight, middle are height*width.
+	// NOTE must be more than 4 layers.
+	layers         = 5
+	width          = 5
+	height         = 5
+	numberOfValues = ((layers - 4) * width * height) + (height * 2) + 2
 )
 
 // This swarm will be the driving force behind the neurons.
 type Swarm struct {
-	networkCollection [swarmSize]particle // Size of the swarm
+	networkCollection [swarmSize]*particle // Size of the swarm
 	bestParticle      particle
 	mu                sync.Mutex
 	shouldStop        bool
@@ -29,24 +35,33 @@ type Swarm struct {
 // Each particle holds a neural network
 type particle struct {
 	fitness    float64
-	weight     [networkSize]float64 // weight of each neuron
-	bestWeight [networkSize]float64
-	velocity   [networkSize]float64 // velocity of each neuron
+	weight     [layers]mat.Matrix // weight of each neuron
+	bestWeight [layers]mat.Matrix
+	velocity   [numberOfValues]float64 // velocity of each neuron
 }
 
-func initParticle() particle {
+func initParticle() *particle {
 	p := new(particle)
-	for i := range networkSize {
-		p.weight[i] = rand.Float64()
+
+	p.weight[0] = mat.NewMatrix([]float64{rand.Float64()}, 1, 1)
+	p.weight[1] = mat.NewMatrix(mat.NewRandomMatrixValues(height, 1))
+
+	for i := range layers - 4 {
+		p.weight[i+2] = mat.NewMatrix(mat.NewRandomMatrixValues(height, width))
+	}
+
+	p.weight[layers-2] = mat.NewMatrix(mat.NewRandomMatrixValues(height, 1))
+	p.weight[layers-1] = mat.NewMatrix([]float64{rand.Float64()}, 1, 1)
+
+	for i := range p.velocity {
 		p.velocity[i] = rand.Float64()
 	}
+
 	p.bestWeight = p.weight
 	p.fitness = math.MaxFloat64
-	return *p
+	return p
 }
 
-// This function is a little 'learning algorithm specific', but nil can be passed in if you're
-// not using PSO
 func (p *particle) fitnessFunction(s *Swarm) {
 	errorBuf := 0.0
 	counter := 0.0
@@ -65,7 +80,7 @@ func (p *particle) fitnessFunction(s *Swarm) {
 	}
 	p.fitness = errorBuf
 
-	if s != nil { // Should be able to reuse outside of PSO
+	if s != nil {
 		s.mu.Lock()
 		if p.fitness < s.bestParticle.fitness {
 			s.bestParticle = *p
@@ -75,21 +90,25 @@ func (p *particle) fitnessFunction(s *Swarm) {
 
 }
 
-func (p *particle) runNetwork(x float64) float64 {
-	// get ready for matrix multiplication
-	x = bipolar(x * p.weight[0]) // 0
-
-	var bufSingle float64
-	for i := range 5 {
-		bufSingle += bipolar(x * p.weight[i+1]) // 1, 2, 3, 4, 5: first layer
-
+func (p *particle) getWeightList(best bool) (list []float64) {
+	if best {
+		for _, mat := range p.bestWeight {
+			list = append(list, mat.GetValueList()...)
+		}
+		return
 	}
+	for _, mat := range p.weight {
+		list = append(list, mat.GetValueList()...)
+	}
+	return
+}
 
-	bufSingle = bipolar(bufSingle)
-
-	bufSingle *= p.weight[6] // 6: last node
-
-	return bufSingle
+func (p *particle) runNetwork(x float64) float64 {
+	input := mat.NewMatrix([]float64{x}, 1, 1)
+	for _, matrix := range p.weight {
+		input = mat.Mul(input, matrix)
+	}
+	return input.Values[0][0]
 }
 
 // TODO create more activiation functions and include them in various layers.
@@ -121,16 +140,19 @@ func (s *Swarm) findBestParticle() particle {
 			bestIndex = i
 		}
 	}
-	return s.networkCollection[bestIndex]
+	return *s.networkCollection[bestIndex]
 }
 
 func (p *particle) updateVelocity(s *Swarm) {
 	r1 := rand.Float64()
 	r2 := rand.Float64()
+	weight := p.getWeightList(false)
+	bestWeight := p.getWeightList(true)
+	bestParticleWeight := p.getWeightList(true)
 
 	for i := range p.velocity {
-		vBuf := s.inertia*p.velocity[i] + s.c1*r1*(p.bestWeight[i]-p.weight[i]) +
-			s.c2*r2*(s.bestParticle.weight[i]-p.weight[i])
+		vBuf := s.inertia*p.velocity[i] + s.c1*r1*(bestWeight[i]-weight[i]) +
+			s.c2*r2*(bestParticleWeight[i]-weight[i])
 		switch {
 		case vBuf < -1:
 			vBuf = -1
@@ -144,7 +166,13 @@ func (p *particle) updateVelocity(s *Swarm) {
 }
 
 func (p *particle) updateWeight() {
-	for i := 0; i < len(p.weight); i++ {
-		p.weight[i] = p.weight[i] + p.velocity[i]
+	weight := p.getWeightList(false)
+	for i := 0; i < len(weight); i++ {
+		weight[i] = weight[i] + p.velocity[i]
+	}
+
+	for i, m := range p.weight {
+		values := m.GetValueList()
+		p.weight[i] = mat.NewMatrix(values, m.Height, m.Width)
 	}
 }
