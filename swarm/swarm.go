@@ -41,7 +41,7 @@ type particle struct {
 }
 
 func initParticle() *particle {
-	p := new(particle)
+	p := &particle{}
 
 	p.weight[0] = mat.NewMatrix([]float64{rand.Float64()}, 1, 1)
 	p.weight[1] = mat.NewMatrix(mat.NewRandomMatrixValues(height, 1))

@@ -1,6 +1,9 @@
 package mat
 
-import "math/rand/v2"
+import (
+	"fmt"
+	"math/rand/v2"
+)
 
 type Matrix struct {
 	Width, Height int
@@ -12,6 +15,7 @@ func NewMatrix(input []float64, height, width int) Matrix {
 	count := 0
 	for i := range m.Values {
 		for j := range m.Values[i] {
+			fmt.Printf("values: %v, values values: %v, input: %v\n", len(m.Values), len(m.Values[0]), len(input))
 			m.Values[i][j] = input[count]
 			count++
 		}
@@ -20,7 +24,7 @@ func NewMatrix(input []float64, height, width int) Matrix {
 }
 func Mul(one, two Matrix) Matrix {
 	if one.Width != two.Height {
-		transpose(two)
+		two = transpose(two)
 	}
 
 	m := newBlankMatrix(one.Height, two.Width)
@@ -39,10 +43,11 @@ func Mul(one, two Matrix) Matrix {
 }
 
 func NewRandomMatrixValues(height, width int) ([]float64, int, int) {
-	list := make([]float64, 0, height*width)
+	list := make([]float64, height*width)
 	for i := range list {
 		list[i] = rand.Float64()
 	}
+	fmt.Println("LIST", list)
 	return list, height, width
 }
 
