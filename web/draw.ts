@@ -46,26 +46,32 @@ async function sendInfo() {
     }
     const button = document.getElementById("rest-button-send") as HTMLButtonElement;
     button.innerText = training;
+    shouldPoll = true;
+    setTimeout(loadAndGraph, 1000);
   } catch (e) {
     console.error("Error in parsing html input: ", e);
     return;
   }
 }
 
+var shouldPoll = true;
 async function loadAndGraph() {
   try {
     const data = await getData();
-    console.log(data);
     if (data) {
+      clearGraph();
       loadGraph(data);
     }
     const button = document.getElementById("rest-button-send") as HTMLButtonElement;
     button.innerText = startTraining;
+    if(shouldPoll){
+      setTimeout(loadAndGraph, 1000);
+    }
   } catch (e) {
     console.error("Error in retreiving data: ", e);
-    return;
+    shouldPoll = false;
   }
-};
+}
 
 async function getData(): Promise<number[]> {
   const response = await fetch(valueAPI);
@@ -74,6 +80,23 @@ async function getData(): Promise<number[]> {
   }
   const data = await (response.json()) as GraphData;
   return data.Data;
+}
+
+const stopAPI = "/stop/";
+function stop(){
+  try{
+    fetch(stopAPI)
+    .then(response =>{
+      if (!response.ok){
+        throw new Error("Failed to stop");
+      }
+      shouldPoll = false
+      const button = document.getElementById("rest-button-send") as HTMLButtonElement;
+      button.innerText = "Start Training";
+    })
+  }catch(e){
+    console.error(e);
+  }
 }
 
 

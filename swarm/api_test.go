@@ -15,7 +15,8 @@ func TestEndToEnd(t *testing.T) {
 			SocCoef: .9,
 		}
 		s := &swarm.Swarm{}
-		go s.PSOSineGen(u)
+		s.InitSwarm(u)
+		go s.PSOSineGen()
 		time.Sleep(time.Millisecond * 500)
 		data := s.GetValues()
 		if len(data) == 0 {

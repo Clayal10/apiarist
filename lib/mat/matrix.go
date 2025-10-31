@@ -1,7 +1,6 @@
 package mat
 
 import (
-	"fmt"
 	"math/rand/v2"
 )
 
@@ -10,19 +9,18 @@ type Matrix struct {
 	Values        [][]float64
 }
 
-func NewMatrix(input []float64, height, width int) Matrix {
+func NewMatrix(input []float64, height, width int) *Matrix {
 	m := newBlankMatrix(height, width)
 	count := 0
 	for i := range m.Values {
 		for j := range m.Values[i] {
-			fmt.Printf("values: %v, values values: %v, input: %v\n", len(m.Values), len(m.Values[0]), len(input))
 			m.Values[i][j] = input[count]
 			count++
 		}
 	}
 	return m
 }
-func Mul(one, two Matrix) Matrix {
+func Mul(one, two *Matrix, function func(float64) float64) *Matrix {
 	if one.Width != two.Height {
 		two = transpose(two)
 	}
@@ -34,6 +32,9 @@ func Mul(one, two Matrix) Matrix {
 			var sum float64 = 0
 			for k := range one.Width {
 				sum += one.Values[i][k] * two.Values[k][j]
+			}
+			if function != nil {
+				sum = function(sum)
 			}
 			m.Values[i][j] = sum
 			sum = 0
@@ -47,17 +48,16 @@ func NewRandomMatrixValues(height, width int) ([]float64, int, int) {
 	for i := range list {
 		list[i] = rand.Float64()
 	}
-	fmt.Println("LIST", list)
 	return list, height, width
 }
 
 // GetSize returns the number of values used in the matrix.
-func (mat Matrix) GetSize() int {
+func (mat *Matrix) GetSize() int {
 	return mat.Height * mat.Width
 }
 
-func (mat Matrix) GetValueList() []float64 {
-	list := make([]float64, 0, mat.Height*mat.Width)
+func (mat *Matrix) GetValueList() []float64 {
+	list := make([]float64, mat.Height*mat.Width)
 	index := 0
 	for i := range mat.Height {
 		for j := range mat.Width {
@@ -68,8 +68,8 @@ func (mat Matrix) GetValueList() []float64 {
 	return list
 }
 
-func newBlankMatrix(height, width int) Matrix {
-	m := Matrix{
+func newBlankMatrix(height, width int) *Matrix {
+	m := &Matrix{
 		Width:  width,
 		Height: height,
 		Values: make([][]float64, height),
@@ -80,7 +80,7 @@ func newBlankMatrix(height, width int) Matrix {
 	return m
 }
 
-func transpose(m Matrix) Matrix {
+func transpose(m *Matrix) *Matrix {
 	v := make([]float64, m.Width*m.Height)
 	count := 0
 	for i := range m.Height {

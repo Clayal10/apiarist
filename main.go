@@ -15,6 +15,7 @@ func main() {
 	http.HandleFunc("/", mainPageHandler)
 	http.HandleFunc("/submit/", submitHandler)
 	http.HandleFunc("/graph/", graphHandler)
+	http.HandleFunc("/stop/", stopHandler)
 
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -64,7 +65,7 @@ func submitHandler(write http.ResponseWriter, request *http.Request) {
 
 		s = &swarm.Swarm{}
 		s.InitSwarm(dataInput)
-		go s.PSOSineGen(dataInput)
+		go s.PSOSineGen()
 	}
 }
 
@@ -79,7 +80,6 @@ func graphHandler(write http.ResponseWriter, request *http.Request) {
 			fmt.Println("Swarm not initialized.")
 			return
 		}
-		fmt.Println("Starting To Generate Network")
 
 		data := GraphData{
 			Data: s.GetValues(),
@@ -92,4 +92,12 @@ func graphHandler(write http.ResponseWriter, request *http.Request) {
 		}
 		write.Write(dataJSON)
 	}
+}
+
+func stopHandler(write http.ResponseWriter, request *http.Request) {
+	if s == nil {
+		write.WriteHeader(http.StatusInternalServerError)
+	}
+	s.Stop()
+	write.WriteHeader(http.StatusOK)
 }
