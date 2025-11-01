@@ -69,7 +69,10 @@ func (p *particle) fitnessFunction() {
 		predicted := p.runNetwork(float64(i))
 		real := Function(i)
 
-		errorBuf += (predicted - real) * (predicted - real)
+		diff := predicted - real
+		diff = math.Abs(diff)
+
+		errorBuf += diff * diff
 		counter += 1
 	}
 
